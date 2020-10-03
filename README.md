@@ -40,29 +40,51 @@ https://smartthings.developer.samsung.com/partner/enroll
   - Add the credentials to the SmartThings developer workspace.
 
 ## AD2Iot CLI command reference
+### Base commands
  - help
    - Show the list of commands or give more detail on a command.
  - reboot
    - Reboot the microcontroller
  - cleanup
    - Erase adoption and other NV data and set the device back into adopt mode for SmartThings.
+ - upgrade
+   - Fetch and install an upgrade if available.
+ - version
+   - Show installed and available remote update server version.
  - button
    - Simulate a button press event.
  - code
    - Manage user codes.
+ - ad2term
+   - Connect to the Socket or UART AD2* device directly stopping all processing until the mode is exited. Allow for diagnostics or configuration directly to the AD2* device.
  - vpaddr
    - Manage virtual partitions.
  - ad2source
    - Configure the source for AlarmDecoder signals. Local UART or remote using tcpip to a remote host and port.
+### SmartThings integration commands
  - stserial
    - Sets the SmartThings device_info serialNumber
  - stprivatekey
    - Sets the SmartThings device_info privateKey
  - stpublickey
    - Sets the SmartThings device_info publicKey
-
+### Twilio notification commands
+ - twsid
+   - Set Twilio SID.
+ - twtoken
+   - Set Twilio TOKEN.
+ - twtype
+   - Set Twilio notification type
+ - twfrom
+   - Set Twilio From
+ - twto
+   - Set Twilio To
 
 ## Building firmware
+### Setup build environment
+- Follow the instructions in the [SmartThings SDK for Direct connected devices for C](https://github.com/SmartThingsCommunity/st-device-sdk-c-ref) project for setting up a build environment. Confirm you can build the switch_example before continuing.
+- Place the contents of this his project in ```st-device-sdk-c-ref/apps/esp32/```
+
 ### Configure the project
 
 ```
@@ -143,3 +165,7 @@ I (266972) AD2_IoT: MESSAGE_CB: '[10010001000000003A--],008,[f72600ff1008001c080
 ```
 
 ## Troubleshooting
+- Pressing ENTER early in the ESP32 boot will prevent any startup tasks. This can help if the ESP32 is in a REBOOT CRASH LOOP. To exit this mode ```'reboot'```
+- If the AD2* is not communicating it may be stuck in a configuration mode or its configuration may have been corrupted during firmware update of the ESP32. If this happens you can directly connect to the AD2* over the UART or Socket by using the command ```'ad2term'```.
+
+  Note) If the connection is a Socket it is currently necessary to have the ESP32 running and not halted at boot and connected with SmartThings for Wifi and networking to be active.

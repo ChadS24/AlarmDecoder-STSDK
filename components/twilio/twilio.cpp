@@ -130,16 +130,6 @@ std::string urlencode(std::string str)
 }
 
 /**
- * missing std::to_string()
- */
-std::string to_string(int n)
-{
-    std::ostringstream stm;
-    stm << n;
-    return stm.str();
-}
-
-/**
  * build auth string from user and pass
  */
 std::string get_auth_header(const std::string& user, const std::string& password)
@@ -179,12 +169,12 @@ std::string build_request_string(std::string sid,
     std::string auth_header = get_auth_header(sid, token);
     std::string http_request =
         "POST /" + std::string(API_VERSION) + "/Accounts/" + sid + "/Messages HTTP/1.0\r\n" +
-        "User-Agent: esp-idf/1.0 esp32(v" + to_string(chip_info.revision) + ")\r\n" +
+        "User-Agent: esp-idf/1.0 esp32(v" + ad2_to_string(chip_info.revision) + ")\r\n" +
         auth_header + "\r\n" +
         "Host: " + WEB_SERVER + "\r\n" +
         "Cache-control: no-cache\r\n" +
         "Content-Type: application/x-www-form-urlencoded; charset=utf-8\r\n" +
-        "Content-Length: " + to_string(body.length()) + "\r\n" +
+        "Content-Length: " + ad2_to_string(body.length()) + "\r\n" +
         "Connection: close\r\n" +
         "\r\n" + body + "\r\n";
     return http_request;
@@ -400,7 +390,7 @@ void twilio_send_task(void *pvParameters)
             ESP_LOGI(TAG, "connection closed");
             break;
         }
-        // FIXME: parse response error logging for easier debugging.
+        // TODO: parse response error logging for easier debugging.
 
         len = ret;
         ESP_LOGD(TAG, "%d bytes read", len);
@@ -658,8 +648,8 @@ void twilio_init()
         xTaskCreate(&twilio_consumer_task, "twilio_consumer_task", 2048, NULL, tskIDLE_PRIORITY+1, NULL);
     }
 
-    // FIXME configure to all selection on events to notify on.
-    // FIXME add templates to each event class with formatting args from state.
+    // TODO configure to all selection on events to notify on.
+    // TODO add templates to each event class with formatting args from state.
     // Register callbacks for a few static events for testing.
     AD2Parse.subscribeTo(ON_LRR, ad2_event_cb, (void*)ON_LRR);
     AD2Parse.subscribeTo(ON_ARM, ad2_event_cb, (void*)ON_ARM);
